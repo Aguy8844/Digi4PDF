@@ -16,8 +16,8 @@ class BookContentDownloader:
         file_url, special_book_url = self.get_file_url(url)
 
         if file_url is None:
-            print("Direkter Download bekommt keine echten SVG-Dateien.")
-            print("Starte sichtbaren Chrome-Fallback...")
+            print("Direct download did not receive real SVG files.")
+            print("Starting visible Chrome fallback...")
             return self.download_svgs_with_browser(down_dir, url, show_progress=show_progress)
 
         total_pages = self.get_total_pages(file_url) if show_progress else None
@@ -42,14 +42,14 @@ class BookContentDownloader:
                         break
 
                     if counter > 1500:
-                        print("Abbruch nach 1500 Seiten als Sicherheitslimit.")
+                        print("Stopped after 1500 pages as a safety limit.")
                         break
 
                     response.raise_for_status()
 
                 except (RequestException, HTTPError):
                     if counter == 1:
-                        print(f"Fehler beim Download: {file_url_with_counter}")
+                        print(f"Download error: {file_url_with_counter}")
                         return False
                     break
 
@@ -74,8 +74,8 @@ class BookContentDownloader:
         file_url, special_book_url = self.get_file_url(url)
 
         if file_url is None:
-            print("Direkter Download bekommt keine echten SVG-Dateien.")
-            print("Starte sichtbaren Chrome-Fallback...")
+            print("Direct download did not receive real SVG files.")
+            print("Starting visible Chrome fallback...")
             return self.download_pages_with_browser(
                 down_dir,
                 url,
@@ -109,7 +109,7 @@ class BookContentDownloader:
 
                 except (RequestException, HTTPError):
                     if downloaded == 0:
-                        print(f"Fehler beim Download: {file_url_with_counter}")
+                        print(f"Download error: {file_url_with_counter}")
                         return False
                     break
 
@@ -172,12 +172,12 @@ class BookContentDownloader:
 
         if failed:
             print("")
-            print(f"{len(failed)} Bilder konnten per requests nicht geladen werden.")
-            print("Versuche Bilder über Chrome-Kontext zu laden...")
+            print(f"{len(failed)} images could not be downloaded with requests.")
+            print("Trying to download images through the Chrome context...")
 
             driver = self.make_logged_in_driver(base_url)
             if driver is None:
-                print("Chrome-Bild-Fallback nicht verfügbar. PDF wird trotzdem versucht.")
+                print("Chrome image fallback is not available. PDF conversion will still be attempted.")
                 return True
 
             try:
@@ -196,9 +196,9 @@ class BookContentDownloader:
                         pbar.update(1)
 
                 if still_failed:
-                    print(f"Warnung: {still_failed} Bilder konnten auch über Chrome nicht geladen werden.")
+                    print(f"Warning: {still_failed} images could not be downloaded through Chrome either.")
                 else:
-                    print("Alle fehlenden Bilder wurden über Chrome geladen.")
+                    print("All missing images were downloaded through Chrome.")
 
             finally:
                 try:
@@ -358,7 +358,7 @@ class BookContentDownloader:
                     downloaded += 1
                     pbar.update(1)
 
-            print(f"{downloaded} SVG-Seiten über Chrome geladen.")
+            print(f"{downloaded} SVG pages downloaded through Chrome.")
             return downloaded > 0
 
         finally:
@@ -379,7 +379,7 @@ class BookContentDownloader:
 
                 if not self.text_is_svg(svg_text):
                     if counter == 1:
-                        print("Chrome-Fallback konnte keine SVG-Dateien lesen.")
+                        print("Chrome fallback could not read any SVG files.")
                         return False
                     break
 
@@ -392,7 +392,7 @@ class BookContentDownloader:
                 downloaded += 1
                 pbar.update(1)
 
-        print(f"{downloaded} SVG-Seiten über Chrome geladen.")
+        print(f"{downloaded} SVG pages downloaded through Chrome.")
         return downloaded > 0
 
     def download_pages_with_browser(self, down_dir, url, start_page, end_page, first_non_titlepage, show_progress=False):
@@ -414,7 +414,7 @@ class BookContentDownloader:
                     svg_text = self.browser_fetch_text(driver, svg_url)
 
                     if not self.text_is_svg(svg_text):
-                        print(f"Seite {counter} konnte nicht gelesen werden.")
+                        print(f"Seite {counter} could not be read.")
                         return downloaded > 0
 
                     with open(f"{down_dir}/{counter}.svg", "w+", encoding="utf8") as svg_file:
@@ -437,7 +437,7 @@ class BookContentDownloader:
             from selenium import webdriver
             from selenium.webdriver.chrome.options import Options
         except Exception as exc:
-            print(f"Selenium ist nicht verfügbar: {exc}")
+            print(f"Selenium is not available: {exc}")
             return None
 
         options = Options()
@@ -479,17 +479,17 @@ class BookContentDownloader:
             for _ in range(5):
                 svg_text = self.browser_fetch_text(driver, test_svg_url)
                 if self.text_is_svg(svg_text):
-                    print("Chrome-Fallback ist angemeldet und kann Dateien lesen.")
+                    print("Chrome fallback is logged in and can read files.")
                     return driver
                 time.sleep(1)
 
             print("")
             print("=" * 72)
-            print("Chrome wurde geöffnet, aber die Dateien sind noch nicht freigegeben.")
-            print("Bitte im geöffneten Chrome-Fenster einloggen bzw. das Buch öffnen.")
-            print("Wenn die Buchseite sichtbar ist, komm zurück in PowerShell und drücke ENTER.")
+            print("Chrome has been opened, but the files are not available yet.")
+            print("Please log in or open the book in the opened Chrome window.")
+            print("When the book page is visible, return to PowerShell and press ENTER.")
             print("=" * 72)
-            input("Weiter mit ENTER, sobald das Buch im Chrome-Fenster offen ist... ")
+            input("Continue with ENTER once the book is open in the Chrome window... ")
 
             driver.get(base_url + "?page=1")
             time.sleep(2)
@@ -497,16 +497,16 @@ class BookContentDownloader:
             for _ in range(10):
                 svg_text = self.browser_fetch_text(driver, test_svg_url)
                 if self.text_is_svg(svg_text):
-                    print("Chrome-Fallback ist jetzt angemeldet und kann Dateien lesen.")
+                    print("Chrome fallback is now logged in and can read files.")
                     return driver
                 time.sleep(1)
 
-            print("Auch nach manuellem Login konnte Chrome keine Dateien lesen.")
+            print("Chrome still could not read the files after manual login.")
             driver.quit()
             return None
 
         except Exception as exc:
-            print(f"Chrome-Fallback konnte nicht gestartet werden: {exc}")
+            print(f"Chrome fallback could not be started: {exc}")
 
             try:
                 driver.quit()

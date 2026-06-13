@@ -47,18 +47,18 @@ class CommandHandler:
 
     def main(self):
         if not self.config_handler.check_config():
-            print("Keine gültigen Zugangsdaten gefunden.")
+            print("No valid login credentials found.")
             self.add_account_interactive(set_active=True)
 
         if self.login_current_account():
             self.menu()
         else:
-            print("Login fehlgeschlagen. Bitte Accountdaten prüfen.")
+            print("Login failed. Please check your account credentials.")
             self.accounts_menu()
 
     def login_current_account(self):
         active = self.config_handler.get_active_account_name()
-        print(f"Einloggen mit Account: {active}")
+        print(f"Logging in with account: {active}")
 
         self.session = self.create_session()
         self.auth = AuthAndTokenHandler()
@@ -67,10 +67,10 @@ class CommandHandler:
         login_success = self.auth.login_user(self.session)
 
         if login_success:
-            print("Login erfolgreich.\n")
+            print("Login successful.\n")
             return True
 
-        print("Login fehlgeschlagen.\n")
+        print("Login failed.\n")
         return False
 
     # ------------------------------------------------------------------
@@ -78,31 +78,31 @@ class CommandHandler:
     # ------------------------------------------------------------------
 
     def menu(self, *args):
-        print("Welcome to digi4school-2-pdf!!!")
+        print("Welcome to Digi4PDF!")
 
         while True:
             active = self.config_handler.get_active_account_name()
             print("")
             print("=" * 72)
-            print(f"Aktiver Account: {active}")
+            print(f"Active account: {active}")
             print("=" * 72)
-            print("1  - Bücher anzeigen")
-            print("2  - Buch auswählen und herunterladen")
-            print("3  - Alle Bücher herunterladen")
-            print("4  - Einzelne Seite / Seitenbereich herunterladen")
-            print("5  - E-Book-Link hinzufügen")
-            print("6  - Gespeicherten manuellen Link entfernen")
-            print("7  - Bücherliste neu aus Digi4School scannen")
-            print("8  - Buchtitel bearbeiten")
-            print("9  - PDF-Ordner öffnen")
-            print("10 - Account wechseln")
-            print("11 - Account hinzufügen / aktualisieren")
-            print("12 - Accounts anzeigen / verwalten")
-            print("13 - Hilfe")
-            print("0  - Beenden")
+            print("1  - Show books")
+            print("2  - Select and download a book")
+            print("3  - Download all books")
+            print("4  - Download a single page / page range")
+            print("5  - Add an e-book URL manually")
+            print("6  - Remove a saved manual URL")
+            print("7  - Rescan book list from Digi4School")
+            print("8  - Edit a book title")
+            print("9  - Open PDF output folder")
+            print("10 - Switch account")
+            print("11 - Add / update account")
+            print("12 - Show / manage accounts")
+            print("13 - Help")
+            print("0  - Exit")
             print("-" * 72)
 
-            choice = input("Auswahl oder Befehl > ").strip()
+            choice = input("Select an option or enter a command > ").strip()
 
             try:
                 if choice == "1":
@@ -140,7 +140,7 @@ class CommandHandler:
             except SystemExit:
                 raise
             except Exception as e:
-                print(f"Fehler: {e}")
+                print(f"Error: {e}")
 
     def execute_command(self, command):
         if not command.strip():
@@ -154,23 +154,23 @@ class CommandHandler:
             except SystemExit:
                 raise
             except Exception as e:
-                print(f"Fehler: {e}\n")
+                print(f"Error: {e}\n")
         else:
-            print("Unbekannter Befehl. Tippe 'help'.\n")
+            print("Unknown command. Type 'help'.\n")
 
     def help(self, *args):
         print("")
-        print("Zahlenmenü:")
-        print("1 Bücher anzeigen, 2 Buch herunterladen, 7 neu scannen, 8 Buchtitel bearbeiten, 10 Account wechseln, 11 Account hinzufügen.")
+        print("Number menu:")
+        print("1 show books, 2 download a book, 7 rescan, 8 edit title, 10 switch account, 11 add account.")
         print("")
-        print("Buchauswahl:")
-        print("- Nummer eingeben, z.B. 4")
-        print("- ID eingeben, z.B. 6410")
-        print("- Suchtext eingeben, z.B. mathe")
-        print("- / zeigt wieder alle Bücher")
-        print("- q bricht ab")
+        print("Book selection:")
+        print("- Enter a number, e.g. 4")
+        print("- Enter an ID, e.g. 6410")
+        print("- Enter search text, e.g. math")
+        print("- / shows all books again")
+        print("- q cancels")
         print("")
-        print("Alte Befehle funktionieren weiterhin:")
+        print("Classic command mode still works:")
         print("- list-books")
         print("- download book <index_or_id>")
         print("- download all")
@@ -198,11 +198,11 @@ class CommandHandler:
 
         while True:
             print("")
-            print("Bücher anzeigen")
-            print("1 - Alle Bücher")
-            print("2 - Nur Unknown-title-Einträge")
-            print("3 - Suche/Filter")
-            print("0 - Zurück")
+            print("Book list")
+            print("1 - All books")
+            print("2 - Only entries with unknown titles")
+            print("3 - Search/filter")
+            print("0 - Back")
             choice = input("> ").strip()
 
             if choice == "1":
@@ -211,17 +211,17 @@ class CommandHandler:
                 unknown = [b for b in books if "unknown" in str(b[2]).lower()]
                 self.print_books(unknown)
             elif choice == "3":
-                query = input("Suchtext: ").strip()
+                query = input("Search text: ").strip()
                 self.print_books(self.filter_books(books, query))
             elif choice == "0":
                 return
             else:
-                print("Bitte 0 bis 3 eingeben.")
+                print("Please enter 0, 1, 2, or 3.")
 
     def print_books(self, data):
         if len(data) > 0:
             print("")
-            print("Index   ID          Book Name")
+            print("Index   ID          Book name")
             print("-" * 100)
 
             for counter, book in enumerate(data, start=1):
@@ -233,7 +233,7 @@ class CommandHandler:
             print("-" * 100)
             print("")
         else:
-            print("No data found!!\n")
+            print("No data found.\n")
 
     def choose_book(self, headline="Buch auswählen"):
         all_books = self.digi4school.get_book_list(self.session)
@@ -250,9 +250,9 @@ class CommandHandler:
             self.print_books(filtered[:40])
 
             if len(filtered) > 40:
-                print(f"... {len(filtered) - 40} weitere Treffer. Suchtext eingeben, um einzugrenzen.\n")
+                print(f"... {len(filtered) - 40} more results. Enter search text to narrow the list.\n")
 
-            print("Nummer/ID wählen | Suchtext eingeben | / = alle | q = zurück")
+            print("Choose number/ID | enter search text | / = all | q = back")
             choice = input("> ").strip()
 
             if choice.lower() in ("q", "quit", "zurück", "back"):
@@ -279,7 +279,7 @@ class CommandHandler:
             filtered = self.filter_books(all_books, query)
 
             if not filtered:
-                print("Keine Treffer. '/' eingeben, um wieder alle Bücher zu sehen.")
+                print("No matches. Enter '/' to show all books again.")
                 filtered = []
 
     def filter_books(self, books, query):
@@ -302,22 +302,22 @@ class CommandHandler:
 
     def force_rescan_books(self, *args):
         print("")
-        print("Ich scanne die Bücherliste für diesen Account neu.")
-        print("Das kann kurz ein Chrome-Fenster öffnen.")
-        confirm = input("Wirklich neu scannen? [j/N] ").strip().lower()
+        print("This will rescan the book list for the active account.")
+        print("A Chrome window may open briefly.")
+        confirm = input("Rescan now? [y/N] ").strip().lower()
 
-        if confirm not in ("j", "ja", "y", "yes"):
-            print("Abgebrochen.\n")
+        if confirm not in ("y", "yes", "j", "ja"):
+            print("Cancelled.\n")
             return
 
         books = self.digi4school.force_rescan_current_account(self.session)
 
         if books:
             print("")
-            print("Neue Bücherliste:")
+            print("Updated book list:")
             self.print_books(books)
         else:
-            print("Beim Scan wurden keine Bücher gefunden.\n")
+            print("No books were found during the scan.\n")
 
     # ------------------------------------------------------------------
     # Downloads
@@ -335,9 +335,9 @@ class CommandHandler:
         if data is None:
             return
 
-        start_page = input("Startseite? ").strip()
-        end_page = input("Endseite leer lassen für nur eine Seite: ").strip() or None
-        disable = input("Titelblatt-Check deaktivieren? [j/N] ").strip().lower() in ("j", "ja", "y", "yes")
+        start_page = input("Start page? ").strip()
+        end_page = input("End page, leave empty for a single page: ").strip() or None
+        disable = input("Disable title-page check? [y/N] ").strip().lower() in ("y", "yes", "j", "ja")
 
         self.download_page_by_data(data, start_page, end_page, disable)
 
@@ -382,9 +382,9 @@ class CommandHandler:
         self.digi4school.download_single_book(data, self.session)
 
     def download_all_books(self):
-        confirm = input("Wirklich alle Bücher dieses Accounts herunterladen? [j/N] ").strip().lower()
-        if confirm not in ("j", "ja", "y", "yes"):
-            print("Abgebrochen.\n")
+        confirm = input("Download all books for this account? [y/N] ").strip().lower()
+        if confirm not in ("y", "yes", "j", "ja"):
+            print("Cancelled.\n")
             return
 
         data = self.digi4school.get_book_list(self.session)
@@ -460,15 +460,15 @@ class CommandHandler:
 
     def add_url_interactive(self):
         print("")
-        title = input("Titel/Name für das Buch: ").strip()
-        href = input("E-Book-Link: ").strip()
+        title = input("Book title/name: ").strip()
+        href = input("E-book URL: ").strip()
 
         if not href:
-            print("Kein Link angegeben.\n")
+            print("No URL entered.\n")
             return
 
         book = self.digi4school.add_manual_book(title, href)
-        print(f"Gespeichert für Account '{self.config_handler.get_active_account_name()}': {book[0]} - {book[2]}\n")
+        print(f"Saved for account '{self.config_handler.get_active_account_name()}': {book[0]} - {book[2]}\n")
 
     def remove_book_command(self, *args):
         if not args:
@@ -477,28 +477,28 @@ class CommandHandler:
 
         selector = args[0]
         if self.digi4school.remove_manual_book(selector):
-            print("Manueller Link entfernt.\n")
+            print("Manual URL removed.\n")
         else:
-            print("Manueller Link nicht gefunden.\n")
+            print("Manual URL not found.\n")
 
     def remove_book_interactive(self):
-        selector = input("Welche manuelle Nummer oder ID entfernen? ").strip()
+        selector = input("Which manual entry number or ID should be removed? ").strip()
         if not selector:
             return
 
         if self.digi4school.remove_manual_book(selector):
-            print("Manueller Link entfernt.\n")
+            print("Manual URL removed.\n")
         else:
-            print("Manueller Link nicht gefunden.\n")
+            print("Manual URL not found.\n")
 
     def rename_book_command(self, *args):
         if len(args) >= 2:
             selector = args[0]
             new_title = " ".join(args[1:])
             if self.digi4school.update_book_title(selector, new_title):
-                print("Titel geändert.\n")
+                print("Title updated.\n")
             else:
-                print("Buch nicht gefunden oder Titel leer.\n")
+                print("Book not found or title is empty.\n")
             return
 
         self.rename_book_interactive()
@@ -508,17 +508,17 @@ class CommandHandler:
         if data is None:
             return
 
-        print(f"Aktueller Titel: {data[2]}")
-        new_title = input("Neuer Titel: ").strip()
+        print(f"Current title: {data[2]}")
+        new_title = input("New title: ").strip()
         if not new_title:
-            print("Kein Titel eingegeben.\n")
+            print("No title entered.\n")
             return
 
         if self.digi4school.update_book_title(str(data[0]), new_title):
-            print("Titel geändert.\n")
+            print("Title updated.\n")
             self.list_books()
         else:
-            print("Buch nicht gefunden.\n")
+            print("Book not found.\n")
 
     def open_output_folder(self):
         output_dir = os.path.abspath("output")
@@ -544,10 +544,10 @@ class CommandHandler:
                 marker = "*" if name == active else " "
                 print(f"{i:>2}. {marker} {name}")
             print("-" * 64)
-            print("1 - Account wechseln")
-            print("2 - Account hinzufügen / aktualisieren")
-            print("3 - Account löschen")
-            print("0 - Zurück")
+            print("1 - Switch account")
+            print("2 - Add / update account")
+            print("3 - Delete account")
+            print("0 - Back")
             choice = input("> ").strip()
 
             if choice == "1":
@@ -560,7 +560,7 @@ class CommandHandler:
             elif choice == "0":
                 return
             else:
-                print("Bitte 0 bis 3 eingeben.")
+                print("Please enter 0, 1, 2, or 3.")
 
     def add_account_command(self, *args):
         self.add_account_interactive(set_active=True)
@@ -568,10 +568,10 @@ class CommandHandler:
 
     def add_account_interactive(self, set_active=True):
         print("")
-        print("Neuen Account hinzufügen oder bestehenden aktualisieren.")
-        account_name = input("Account-Name, z.B. schule, privat, freundin: ").strip()
-        email = input("Digi4School E-Mail: ").strip()
-        password = getpass.getpass("Digi4School Passwort: ")
+        print("Add a new account or update an existing one.")
+        account_name = input("Account name, e.g. school, private, friend: ").strip()
+        email = input("Digi4School e-mail: ").strip()
+        password = getpass.getpass("Digi4School password: ")
 
         if not account_name:
             account_name = email.split("@", 1)[0] if "@" in email else "default"
@@ -581,8 +581,8 @@ class CommandHandler:
         if set_active:
             self.config_handler.set_active_account(account_name)
 
-        print(f"Account gespeichert: {account_name}")
-        print("Hinweis: Passwort liegt lokal in config.ini. Diese Datei nicht hochladen/teilen.\n")
+        print(f"Account saved: {account_name}")
+        print("Note: The password is stored locally in config.ini. Do not upload or share this file.\n")
 
     def switch_account_command(self, *args):
         if args:
@@ -595,12 +595,12 @@ class CommandHandler:
         active = self.config_handler.get_active_account_name()
 
         print("")
-        print("Verfügbare Accounts:")
+        print("Available accounts:")
         for i, name in enumerate(accounts, start=1):
             marker = "*" if name == active else " "
             print(f"{i:>2}. {marker} {name}")
 
-        selector = input("Welche Nummer oder welcher Name? ").strip()
+        selector = input("Which number or name? ").strip()
         if not selector:
             return
 
@@ -609,7 +609,7 @@ class CommandHandler:
             if 1 <= index <= len(accounts):
                 account_name = accounts[index - 1]
             else:
-                print("Ungültige Nummer.")
+                print("Invalid number.")
                 return
         else:
             account_name = selector
@@ -620,27 +620,27 @@ class CommandHandler:
         try:
             self.config_handler.set_active_account(account_name)
         except Exception as exc:
-            print(f"Account konnte nicht gewechselt werden: {exc}")
+            print(f"Could not switch account: {exc}")
             return
 
         self.digi4school.clear_cache()
 
         if self.login_current_account():
-            print(f"Aktiver Account: {account_name}\n")
+            print(f"Active account: {account_name}\n")
         else:
-            print("Wechsel gespeichert, aber Login ist fehlgeschlagen.\n")
+            print("Switch was saved, but login failed.\n")
 
     def delete_account_interactive(self):
         accounts = self.config_handler.list_accounts()
         active = self.config_handler.get_active_account_name()
 
         print("")
-        print("Account löschen:")
+        print("Delete account:")
         for i, name in enumerate(accounts, start=1):
             marker = "*" if name == active else " "
             print(f"{i:>2}. {marker} {name}")
 
-        selector = input("Welche Nummer oder welcher Name soll gelöscht werden? ").strip()
+        selector = input("Which number or name should be deleted? ").strip()
         if not selector:
             return
 
@@ -649,22 +649,22 @@ class CommandHandler:
             if 1 <= index <= len(accounts):
                 account_name = accounts[index - 1]
             else:
-                print("Ungültige Nummer.")
+                print("Invalid number.")
                 return
         else:
             account_name = selector
 
-        confirm = input(f"'{account_name}' wirklich löschen? [j/N] ").strip().lower()
-        if confirm not in ("j", "ja", "y", "yes"):
-            print("Abgebrochen.")
+        confirm = input(f"Really delete '{account_name}'? [y/N] ").strip().lower()
+        if confirm not in ("y", "yes", "j", "ja"):
+            print("Cancelled.")
             return
 
         try:
             self.config_handler.delete_account(account_name)
-            print("Account gelöscht.")
+            print("Account deleted.")
             self.login_current_account()
         except Exception as exc:
-            print(f"Konnte Account nicht löschen: {exc}")
+            print(f"Could not delete account: {exc}")
 
     def exit_program(self, *args):
         print("Bye!")

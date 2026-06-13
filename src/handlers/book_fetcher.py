@@ -74,11 +74,11 @@ class BookDataRetriever:
 
     def book_from_url(self, title, href):
         href = self.clean_href(href)
-        title = str(title or "").strip() or "Unbenanntes E-Book"
+        title = str(title or "").strip() or "Untitled e-book"
 
         code, sub_id = self.parse_ebook_url(href)
         if not code:
-            raise ValueError("Das sieht nicht wie ein Digi4School-E-Book-Link aus.")
+            raise ValueError("This does not look like a Digi4School e-book link.")
 
         book_id = f"{code}-{sub_id}" if sub_id else code
         return (book_id, code, title, href, sub_id)
@@ -247,7 +247,7 @@ class BookDataRetriever:
             backup = detected_path.with_suffix(detected_path.suffix + ".bak")
             try:
                 detected_path.replace(backup)
-                print(f"Alte Scan-Datei gesichert als: {backup.name}")
+                print(f"Old scan file saved as: {backup.name}")
             except Exception:
                 pass
 
