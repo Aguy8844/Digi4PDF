@@ -1,0 +1,31 @@
+# Local credentials / accounts
+config.ini
+.env
+
+# Account-specific book lists
+detected_books*.json
+books*.json
+manual_books*.json
+
+# Generated files
+download/
+output/
+dlls/
+
+# Debug files
+debug_ebooks*.html
+test_*.svg
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
